@@ -10,6 +10,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel
         public DocumentTypeAggregate(DocumentTypeId id) : base(id)
         {
             Command<CreateDocumentType, CreateDocumentTypeHandler>();
+            Command<ChangeDocumentTypeName, ChangeDocumentTypeNameHandler>();
         }
     }
 }

@@ -11,6 +11,8 @@ namespace ElArch.Domain.Models.DocumentTypeModel
         {
             Command<CreateDocumentType, CreateDocumentTypeHandler>();
             Command<ChangeDocumentTypeName, ChangeDocumentTypeNameHandler>();
+            Command<AddDocumentTypeField, AddDocumentTypeFieldHandler>();
+            Command<RemoveDocumentTypeField, RemoveDocumentTypeFieldHandler>();
         }
     }
 }

@@ -27,7 +27,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel.Commands
         public override void Handle(DocumentTypeAggregate aggregate, IActorContext context, AddDocumentTypeField command)
         {
             var specification = new AggregateIsNewSpecification().Not()
-                .And(new DocumentTypeNotContainsFieldSpecification(command.Field));
+                .And(new DocumentTypeNotContainsFieldSpecification(command.Field.FieldId));
             var result = specification.Check(aggregate)
                 .ApplyOnLeft(a => a.Emit(new DocumentTypeFieldAdded(command.Field)))
                 .ToExecutionResult();

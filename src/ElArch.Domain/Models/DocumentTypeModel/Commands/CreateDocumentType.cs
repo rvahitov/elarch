@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using Akka.Actor;
 using Akkatecture.Commands;
@@ -11,12 +12,12 @@ namespace ElArch.Domain.Models.DocumentTypeModel.Commands
 {
     public sealed class CreateDocumentType : Command<DocumentTypeAggregate, DocumentTypeId>
     {
-        public CreateDocumentType(DocumentTypeId aggregateId, [NotNull] DocumentTypeName documentTypeName) : base(aggregateId)
+        public CreateDocumentType(DocumentTypeId aggregateId,  DocumentTypeName documentTypeName) : base(aggregateId)
         {
             DocumentTypeName = documentTypeName ?? throw new ArgumentNullException(nameof(documentTypeName));
         }
 
-        [NotNull] public DocumentTypeName DocumentTypeName { get; }
+         public DocumentTypeName DocumentTypeName { get; }
     }
 
     [UsedImplicitly]

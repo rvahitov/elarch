@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using Akka.Actor;
 using Akkatecture.Commands;
@@ -13,12 +14,12 @@ namespace ElArch.Domain.Models.DocumentTypeModel.Commands
 {
     public sealed class RemoveDocumentTypeField : Command<DocumentTypeAggregate, DocumentTypeId>
     {
-        public RemoveDocumentTypeField(DocumentTypeId aggregateId, [NotNull] FieldId fieldId) : base(aggregateId)
+        public RemoveDocumentTypeField(DocumentTypeId aggregateId,  FieldId fieldId) : base(aggregateId)
         {
             FieldId = fieldId ?? throw new ArgumentNullException(nameof(fieldId));
         }
 
-        [NotNull] public FieldId FieldId { get; }
+         public FieldId FieldId { get; }
     }
 
     [UsedImplicitly]

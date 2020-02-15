@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using Akka.Actor;
 using Akkatecture.Commands;
@@ -13,12 +14,12 @@ namespace ElArch.Domain.Models.DocumentTypeModel.Commands
 {
     public sealed class AddDocumentTypeField : Command<DocumentTypeAggregate, DocumentTypeId>
     {
-        public AddDocumentTypeField(DocumentTypeId aggregateId, [NotNull] Field field) : base(aggregateId)
+        public AddDocumentTypeField(DocumentTypeId aggregateId,  Field field) : base(aggregateId)
         {
             Field = field ?? throw new ArgumentNullException(nameof(field));
         }
 
-        [NotNull] public Field Field { get; }
+         public Field Field { get; }
     }
 
     [UsedImplicitly]

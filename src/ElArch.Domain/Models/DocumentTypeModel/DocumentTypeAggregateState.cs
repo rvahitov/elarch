@@ -1,3 +1,4 @@
+#nullable enable
 using System.Collections.Immutable;
 using Akkatecture.Aggregates;
 using ElArch.Domain.Models.DocumentTypeModel.Events;
@@ -11,7 +12,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel
         IEmit<DocumentTypeCreated>, IEmit<DocumentTypeNameChanged>,
         IEmit<DocumentTypeFieldAdded>, IEmit<DocumentTypeFieldRemoved>
     {
-        public DocumentTypeName DocumentTypeName { get; private set; }
+        public DocumentTypeName? DocumentTypeName { get; private set; }
 
         public ImmutableDictionary<FieldId, Field> Fields { get; private set; } = ImmutableDictionary<FieldId, Field>.Empty;
 

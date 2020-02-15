@@ -1,3 +1,4 @@
+#nullable enable
 using Akkatecture.Core;
 using Akkatecture.ValueObjects;
 using Newtonsoft.Json;

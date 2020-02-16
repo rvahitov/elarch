@@ -14,7 +14,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel
     {
         public DocumentTypeName? DocumentTypeName { get; private set; }
 
-        public ImmutableDictionary<FieldId, Field> Fields { get; private set; } = ImmutableDictionary<FieldId, Field>.Empty;
+        public ImmutableDictionary<FieldId, IField> Fields { get; private set; } = ImmutableDictionary<FieldId, IField>.Empty;
 
         public void Apply(DocumentTypeCreated aggregateEvent)
         {

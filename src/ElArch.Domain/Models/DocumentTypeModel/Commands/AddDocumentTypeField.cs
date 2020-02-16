@@ -14,12 +14,12 @@ namespace ElArch.Domain.Models.DocumentTypeModel.Commands
 {
     public sealed class AddDocumentTypeField : Command<DocumentTypeAggregate, DocumentTypeId>
     {
-        public AddDocumentTypeField(DocumentTypeId aggregateId,  Field field) : base(aggregateId)
+        public AddDocumentTypeField(DocumentTypeId aggregateId,  IField field) : base(aggregateId)
         {
             Field = field ?? throw new ArgumentNullException(nameof(field));
         }
 
-         public Field Field { get; }
+         public IField Field { get; }
     }
 
     [UsedImplicitly]

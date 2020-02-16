@@ -7,11 +7,11 @@ namespace ElArch.Domain.Models.DocumentTypeModel.Events
 {
     public sealed class DocumentTypeFieldRemoved : AggregateEvent<DocumentTypeAggregate, DocumentTypeId>
     {
-        public DocumentTypeFieldRemoved(Field field)
+        public DocumentTypeFieldRemoved(IField field)
         {
             Field = field ?? throw new ArgumentNullException(nameof(field));
         }
 
-        public Field Field { get; }
+        public IField Field { get; }
     }
 }

@@ -7,11 +7,11 @@ namespace ElArch.Domain.Models.DocumentTypeModel.Events
 {
     public sealed class DocumentTypeFieldAdded : AggregateEvent<DocumentTypeAggregate, DocumentTypeId>
     {
-        public DocumentTypeFieldAdded(Field field)
+        public DocumentTypeFieldAdded(IField field)
         {
             Field = field ?? throw new ArgumentNullException(nameof(field));
         }
 
-        public Field Field { get; }
+        public IField Field { get; }
     }
 }

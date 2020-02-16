@@ -72,7 +72,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
 
         public TField MinValue(T? value)
         {
-            if (Nullable.Compare(value, MaxValue()) >= 0)
+            if (value != null && MaxValue() != null && Nullable.Compare(value, MaxValue()) >= 0)
                 throw new ArgumentException("MinValue should be less than MaxValue", nameof(value));
             if (Nullable.Equals(MinValue(), value)) return (TField) this;
             var validators = value == null
@@ -83,7 +83,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
 
         public TField MaxValue(T? value)
         {
-            if (Nullable.Compare(value, MinValue()) <= 0)
+            if (value != null && MinValue() != null && Nullable.Compare(value, MinValue()) <= 0)
                 throw new ArgumentException("MaxValue should be greater than MinValue", nameof(value));
             if (Nullable.Equals(value, MaxValue())) return (TField) this;
             var validators = value == null

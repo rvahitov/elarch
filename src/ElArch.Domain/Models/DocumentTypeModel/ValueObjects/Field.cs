@@ -152,7 +152,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
 
         public StringField MinLength(int? value)
         {
-            if (Nullable.Compare(value, MaxLength()) >= 0)
+            if (value != null && MaxLength() != null && Nullable.Compare(value, MaxLength()) >= 0)
                 throw new ArgumentException("MinValue should be less than MaxValue", nameof(value));
             if (value == MinLength()) return this;
             var validators = value == null
@@ -163,7 +163,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
 
         public StringField MaxLength(int? value)
         {
-            if (Nullable.Compare(value, MinLength()) <= 0)
+            if (value != null && MinLength() != null && Nullable.Compare(value, MinLength()) <= 0)
                 throw new ArgumentException("MaxValue should be greater than MinValue", nameof(value));
             if (value == MaxLength()) return this;
             var validators = value == null

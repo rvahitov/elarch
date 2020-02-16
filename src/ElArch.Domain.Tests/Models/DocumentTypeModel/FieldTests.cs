@@ -19,9 +19,6 @@ namespace ElArch.Domain.Tests.Models.DocumentTypeModel
         [Fact]
         public void FieldShouldContainValueOfTypeValidator()
         {
-            var intField = new IntegerField(_fieldId);
-            Assert.NotEmpty(intField.Validators);
-            Assert.Contains(intField.Validators, v => v is ValueOfTypeValidator<int>);
             var decimalField = new DecimalField(_fieldId);
             Assert.NotEmpty(decimalField.Validators);
             Assert.Contains(decimalField.Validators, v => v is ValueOfTypeValidator<decimal>);
@@ -80,6 +77,24 @@ namespace ElArch.Domain.Tests.Models.DocumentTypeModel
             field = field.MinValue(null);
             Assert.DoesNotContain(field.Validators, v => v is FieldMinValueValidator<int>);
             Assert.Null(field.MinValue());
+        }
+
+        [AutoData]
+        [Theory]
+        public void StringFieldTests(int minLength)
+        {
+            var field = new StringField(_fieldId);
+            Assert.Null(field.MinLength());
+            Assert.Null(field.MaxLength());
+            field = field.MinLength(minLength);
+            Assert.Equal(minLength, field.MinLength());
+            var maxLength = minLength + 100;
+            field = field.MaxLength(maxLength);
+            Assert.Equal(maxLength, field.MaxLength());
+            field = field.MaxLength(null);
+            Assert.Null(field.MaxLength());
+            field = field.MinLength(null);
+            Assert.Null(field.MinLength());
         }
     }
 }

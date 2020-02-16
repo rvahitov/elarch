@@ -89,7 +89,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
 
         public override OneOf<object?, Error<string>> Validate(FieldId fieldId, object? value)
         {
-            return value is null || !(value is string sValue) || sValue.Length <= MinLength
+            return value is null || !(value is string sValue) || sValue.Length >= MinLength
                 ? Success(value)
                 : Failure($"Value for field {fieldId} should have minimum {MinLength} characters");
         }
@@ -107,7 +107,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
 
         public override OneOf<object?, Error<string>> Validate(FieldId fieldId, object? value)
         {
-            return value is null || !(value is string sValue) || sValue.Length >= MaxLength
+            return value is null || !(value is string sValue) || sValue.Length <= MaxLength
                 ? Success(value)
                 : Failure($"Value for field {fieldId} should have maximum {MaxLength} characters");
         }

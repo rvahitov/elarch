@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElArch.Domain", "ElArch.Dom
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElArch.Storage", "ElArch.Storage\ElArch.Storage.csproj", "{27A860D8-F4FF-4CA0-A691-A0A6F437C874}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElArch.Domain.Tests", "ElArch.Domain.Tests\ElArch.Domain.Tests.csproj", "{1BD76A63-A2A7-4854-BE1E-5AFD7533E69B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,5 +46,17 @@ Global
 		{27A860D8-F4FF-4CA0-A691-A0A6F437C874}.Release|x64.Build.0 = Release|Any CPU
 		{27A860D8-F4FF-4CA0-A691-A0A6F437C874}.Release|x86.ActiveCfg = Release|Any CPU
 		{27A860D8-F4FF-4CA0-A691-A0A6F437C874}.Release|x86.Build.0 = Release|Any CPU
+		{1BD76A63-A2A7-4854-BE1E-5AFD7533E69B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BD76A63-A2A7-4854-BE1E-5AFD7533E69B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BD76A63-A2A7-4854-BE1E-5AFD7533E69B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1BD76A63-A2A7-4854-BE1E-5AFD7533E69B}.Debug|x64.Build.0 = Debug|Any CPU
+		{1BD76A63-A2A7-4854-BE1E-5AFD7533E69B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1BD76A63-A2A7-4854-BE1E-5AFD7533E69B}.Debug|x86.Build.0 = Debug|Any CPU
+		{1BD76A63-A2A7-4854-BE1E-5AFD7533E69B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BD76A63-A2A7-4854-BE1E-5AFD7533E69B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BD76A63-A2A7-4854-BE1E-5AFD7533E69B}.Release|x64.ActiveCfg = Release|Any CPU
+		{1BD76A63-A2A7-4854-BE1E-5AFD7533E69B}.Release|x64.Build.0 = Release|Any CPU
+		{1BD76A63-A2A7-4854-BE1E-5AFD7533E69B}.Release|x86.ActiveCfg = Release|Any CPU
+		{1BD76A63-A2A7-4854-BE1E-5AFD7533E69B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -2,7 +2,6 @@
 using System;
 using ElArch.Domain.Models.DocumentTypeModel;
 using ElArch.Domain.Models.DocumentTypeModel.ValueObjects;
-using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -20,6 +19,41 @@ namespace ElArch.Storage.ReadModels
         public FieldId FieldId { get; }
 
         public bool? IsRequired { get; set; }
+
+        public static FieldReadModel FromEntity(DocumentTypeId documentTypeId, IField field)
+        {
+            if (field == null) throw new ArgumentNullException(nameof(field));
+            return field switch
+            {
+                BooleanField booleanField => new BooleanFieldReadModel(documentTypeId, booleanField.FieldId){IsRequired = booleanField.IsRequired()},
+                IntegerField integerField => new IntegerFieldReadModel(documentTypeId, integerField.FieldId)
+                {
+                    MinValue = integerField.MinValue(),
+                    MaxValue = integerField.MaxValue(),
+                    IsRequired = integerField.IsRequired()
+                },
+                DecimalField decimalField => new DecimalFieldReadModel(documentTypeId, decimalField.FieldId)
+                {
+                    MinValue = decimalField.MinValue(),
+                    MaxValue = decimalField.MaxValue(),
+                    IsRequired = decimalField.IsRequired()
+                },
+                DateTimeField dateTimeField => new DateTimeFieldReadModel(documentTypeId, dateTimeField.FieldId)
+                {
+                    MinValue = dateTimeField.MinValue(),
+                    MaxValue = dateTimeField.MaxValue(),
+                    IsRequired = dateTimeField.IsRequired()
+                },
+                TextField textField => new TextFieldReadModel(documentTypeId, textField.FieldId){IsRequired = textField.IsRequired()},
+                StringField stringField => new StringFieldReadModel(documentTypeId, stringField.FieldId)
+                {
+                    MinLength = stringField.MinLength(),
+                    MaxLength = stringField.MaxLength(),
+                    IsRequired = stringField.IsRequired()
+                },
+                _ => throw new ApplicationException("Unknown field model")
+            };
+        }
     }
 
     public sealed class BooleanFieldReadModel : FieldReadModel

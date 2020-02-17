@@ -18,7 +18,7 @@ namespace ElArch.Storage.ReadModels
         public DocumentTypeId DocumentTypeId { get; }
         public FieldId FieldId { get; }
 
-        public bool? IsRequired { get; set; }
+        public bool IsRequired { get; set; }
 
         public static FieldReadModel FromEntity(DocumentTypeId documentTypeId, IField field)
         {

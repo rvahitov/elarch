@@ -1,4 +1,5 @@
 using Akkatecture.Aggregates;
+using ElArch.Domain.Models.DocumentTypeModel.Commands;
 using JetBrains.Annotations;
 
 namespace ElArch.Domain.Models.DocumentTypeModel
@@ -8,6 +9,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel
     {
         public DocumentTypeAggregate(DocumentTypeId id) : base(id)
         {
+            Command<CreateDocumentType, CreateDocumentTypeHandler>();
         }
     }
 }

@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElArch.Domain", "ElArch.Dom
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElArch.Storage", "ElArch.Storage\ElArch.Storage.csproj", "{C477419F-A64B-4342-822E-A758411982DA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataLayer", "DataLayer", "{9A1A5933-71BA-4953-9627-A41E8058B136}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElArch.Migrator", "ElArch.Migrator\ElArch.Migrator.csproj", "{D6EE7705-4EEB-4BEC-98F8-48D9BED50FBF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,7 +48,21 @@ Global
 		{C477419F-A64B-4342-822E-A758411982DA}.Release|x64.Build.0 = Release|Any CPU
 		{C477419F-A64B-4342-822E-A758411982DA}.Release|x86.ActiveCfg = Release|Any CPU
 		{C477419F-A64B-4342-822E-A758411982DA}.Release|x86.Build.0 = Release|Any CPU
+		{D6EE7705-4EEB-4BEC-98F8-48D9BED50FBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6EE7705-4EEB-4BEC-98F8-48D9BED50FBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6EE7705-4EEB-4BEC-98F8-48D9BED50FBF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D6EE7705-4EEB-4BEC-98F8-48D9BED50FBF}.Debug|x64.Build.0 = Debug|Any CPU
+		{D6EE7705-4EEB-4BEC-98F8-48D9BED50FBF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D6EE7705-4EEB-4BEC-98F8-48D9BED50FBF}.Debug|x86.Build.0 = Debug|Any CPU
+		{D6EE7705-4EEB-4BEC-98F8-48D9BED50FBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6EE7705-4EEB-4BEC-98F8-48D9BED50FBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6EE7705-4EEB-4BEC-98F8-48D9BED50FBF}.Release|x64.ActiveCfg = Release|Any CPU
+		{D6EE7705-4EEB-4BEC-98F8-48D9BED50FBF}.Release|x64.Build.0 = Release|Any CPU
+		{D6EE7705-4EEB-4BEC-98F8-48D9BED50FBF}.Release|x86.ActiveCfg = Release|Any CPU
+		{D6EE7705-4EEB-4BEC-98F8-48D9BED50FBF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{C477419F-A64B-4342-822E-A758411982DA} = {9A1A5933-71BA-4953-9627-A41E8058B136}
+		{D6EE7705-4EEB-4BEC-98F8-48D9BED50FBF} = {9A1A5933-71BA-4953-9627-A41E8058B136}
 	EndGlobalSection
 EndGlobal

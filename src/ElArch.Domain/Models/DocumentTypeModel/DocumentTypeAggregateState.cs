@@ -9,7 +9,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel
     public sealed class DocumentTypeAggregateState : AggregateState<DocumentTypeAggregate, DocumentTypeId>,
         IEmit<DocumentTypeCreated>
     {
-        public DocumentTypeName DocumentTypeName { get; private set; }
+        public DocumentTypeName? DocumentTypeName { get; private set; }
 
         public void Apply(DocumentTypeCreated aggregateEvent)
         {

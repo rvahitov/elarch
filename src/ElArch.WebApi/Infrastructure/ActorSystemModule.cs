@@ -13,19 +13,7 @@ namespace ElArch.WebApi.Infrastructure
         private static Config ReadConfiguration(IHostEnvironment environment)
         {
             var sb = new StringBuilder();
-            var appSettings = Path.Combine(environment.ContentRootPath, @"appsettings.json");
-            var envAppSettings = Path.Combine(environment.ContentRootPath, @$"appsettings.{environment.EnvironmentName}.json");
             var persistence = Path.Combine(environment.ContentRootPath, @"akka_persistence_sqlserver.hocon");
-            if (File.Exists(appSettings))
-            {
-                sb.AppendLine(File.ReadAllText(appSettings));
-            }
-
-            if (File.Exists(envAppSettings))
-            {
-                sb.AppendLine(File.ReadAllText(envAppSettings));
-            }
-
             if (File.Exists(persistence))
             {
                 sb.AppendLine(File.ReadAllText(persistence));

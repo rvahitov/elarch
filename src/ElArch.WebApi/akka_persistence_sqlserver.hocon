@@ -1,4 +1,5 @@
-﻿akka.persistence{
+﻿ConnectionStrings.DomainStorage = "Data Source=.\\SQLEXPRESS; Initial Catalog=ElArch; Integrated Security=true"
+akka.persistence{
 	journal {
 	        plugin = "akka.persistence.journal.sql-server"
 		sql-server {

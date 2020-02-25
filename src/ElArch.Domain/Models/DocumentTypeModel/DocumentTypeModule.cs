@@ -18,6 +18,8 @@ namespace ElArch.Domain.Models.DocumentTypeModel
 
             builder.Register(c => new CreateDocumentTypeRequestHandler(c.ResolveKeyed<IActorRef>(typeof(DocumentTypeAggregateManager))))
                 .AsImplementedInterfaces();
+            builder.Register(c => new ChangeDocumentTypeRequestNameHandler(c.ResolveKeyed<IActorRef>(typeof(DocumentTypeAggregateManager))))
+                .AsImplementedInterfaces();
         }
     }
 }

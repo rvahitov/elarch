@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Akka.Actor;
 using Akka.Routing;
 using Akkatecture.Aggregates;
@@ -11,7 +12,8 @@ using Microsoft.EntityFrameworkCore;
 namespace ElArch.Storage.DocumentType
 {
     internal sealed class DocumentTypeStorageSubscriber : DomainEventSubscriber,
-        ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, DocumentTypeCreated>
+        ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, DocumentTypeCreated>,
+        ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, DocumentTypeNameChanged>
     {
         private readonly Props _handlerProps;
         private IActorRef _handler;
@@ -34,6 +36,12 @@ namespace ElArch.Storage.DocumentType
             return true;
         }
 
+        public bool Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeNameChanged> domainEvent)
+        {
+            _handler.Tell(domainEvent);
+            return true;
+        }
+
         private sealed class Handler : ReceiveActor
         {
             private readonly Func<ElArchContext> _contextFactory;
@@ -42,9 +50,10 @@ namespace ElArch.Storage.DocumentType
             {
                 _contextFactory = contextFactory;
                 Receive<IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeCreated>>(Handle);
+                Receive<IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeNameChanged>>(Handle);
             }
 
-            public void Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeCreated> domainEvent)
+            private void Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeCreated> domainEvent)
             {
                 var model = new DocumentTypeReadModel
                 {
@@ -56,6 +65,17 @@ namespace ElArch.Storage.DocumentType
                 };
                 using var context = _contextFactory();
                 context.Add(model);
+                context.SaveChanges();
+            }
+
+            private void Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeNameChanged> domainEvent)
+            {
+                using var context = _contextFactory();
+                var model = context.Set<DocumentTypeReadModel>().FirstOrDefault(m => m.AggregateId == domainEvent.AggregateIdentity);
+                if (model == null) return;
+                model.Name = domainEvent.AggregateEvent.DocumentTypeName;
+                model.ModificationTime = domainEvent.Timestamp;
+                model.Version += 1;
                 context.SaveChanges();
             }
 

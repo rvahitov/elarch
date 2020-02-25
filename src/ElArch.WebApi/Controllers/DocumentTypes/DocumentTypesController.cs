@@ -26,5 +26,14 @@ namespace ElArch.WebApi.Controllers.DocumentTypes
             if (response.IsSuccess()) return Ok(response.AsT0);
             return BadRequest(new {error = response.AsT1.Value});
         }
+
+        [HttpPost("name/change")]
+        public async Task<IActionResult> ChangeName(ChangeDocumentTypeNameRequest request, CancellationToken cancellationToken)
+        {
+            if (ModelState.IsValid == false) return BadRequest(ModelState);
+            var response = await _mediator.Send(request, cancellationToken).ConfigureAwait(false);
+            if (response.IsSuccess) return NoContent();
+            return BadRequest(new {error = response.ToString()});
+        }
     }
 }

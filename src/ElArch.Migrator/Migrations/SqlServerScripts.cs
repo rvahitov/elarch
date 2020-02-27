@@ -2,7 +2,7 @@
 {
     internal static class SqlServerScripts
     {
-        public const string CreateJournTable = @"
+        public const string CreateJournalTable = @"
 CREATE TABLE EventJournal (
   Ordering BIGINT IDENTITY(1,1) NOT NULL,
   PersistenceID NVARCHAR(255) NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE SnapshotStore (
   CONSTRAINT PK_SnapshotStore PRIMARY KEY (PersistenceID, SequenceNr)
 );";
 
-        public const string CreateMedataTable = @"
+        public const string CreateMetadataTable = @"
 CREATE TABLE Metadata (
   PersistenceID NVARCHAR(255) NOT NULL,
   SequenceNr BIGINT NOT NULL,

@@ -10,9 +10,30 @@ namespace ElArch.Storage.DocumentType.ReadModels
     {
         public FieldId FieldId { get; set; }
         public DocumentTypeId DocumentTypeId { get; set; }
-        public string ValueType { get; set; }
         public bool IsRequired { get; set; }
         public DateTimeOffset CreationTime { get; set; }
+
+        public static FieldReadModel FromDomainModel(IField field) =>
+            field switch
+            {
+                null => throw new ArgumentNullException(nameof(field)),
+                BooleanField booleanField => new BooleanFieldReadModel {FieldId = booleanField.FieldId, IsRequired = booleanField.IsRequired()},
+                IntegerField integerField => new IntegerFieldReadModel {FieldId = integerField.FieldId, IsRequired = integerField.IsRequired(), MinValue = integerField.MinValue(), MaxValue = integerField.MaxValue()},
+                DecimalField decimalField => new DecimalFieldReadModel {FieldId = decimalField.FieldId, IsRequired = decimalField.IsRequired(), MinValue = decimalField.MinValue(), MaxValue = decimalField.MaxValue()},
+                DateTimeField dateTimeField => new DateTimeFieldReadModel {FieldId = dateTimeField.FieldId, IsRequired = dateTimeField.IsRequired(), MinValue = dateTimeField.MinValue(), MaxValue = dateTimeField.MaxValue()},
+                TextField textField => new TextFieldReadModel {FieldId = textField.FieldId, IsRequired = textField.IsRequired(), MaxLength = textField.MaxLength(), MinLength = textField.MinLength()},
+                _ => throw new NotSupportedException($"Field of type {field.GetType()} is not supported")
+            };
+
+        public IField ToDomainModel() => this switch
+        {
+            BooleanFieldReadModel booleanField => new BooleanField(booleanField.FieldId).IsRequired(booleanField.IsRequired),
+            IntegerFieldReadModel integerField => new IntegerField(integerField.FieldId).IsRequired(integerField.IsRequired).MinValue(integerField.MinValue).MaxValue(integerField.MaxValue),
+            DecimalFieldReadModel decimalField => new DecimalField(decimalField.FieldId).IsRequired(decimalField.IsRequired).MinValue(decimalField.MinValue).MaxValue(decimalField.MaxValue),
+            DateTimeFieldReadModel dateTimeField => new DateTimeField(dateTimeField.FieldId).IsRequired(dateTimeField.IsRequired).MinValue(dateTimeField.MinValue).MaxValue(dateTimeField.MaxValue),
+            TextFieldReadModel textField => new TextField(textField.FieldId).IsRequired(textField.IsRequired).MinLength(textField.MinLength).MaxLength(textField.MaxLength),
+            _ => throw new NotSupportedException($"Field read model of type {GetType()} is not supported")
+        };
     }
 
     public class BooleanFieldReadModel : FieldReadModel
@@ -52,7 +73,7 @@ namespace ElArch.Storage.DocumentType.ReadModels
             builder.HasKey(e => new {e.FieldId, e.DocumentTypeId});
             builder.Property(e => e.FieldId).HasConversion(id => id.Value, value => new FieldId(value));
             builder.Property(e => e.DocumentTypeId).HasConversion(id => id.Value, value => DocumentTypeId.With(value));
-            builder.HasDiscriminator(e => e.ValueType)
+            builder.HasDiscriminator<string>("ValueType")
                 .HasValue<BooleanFieldReadModel>("Boolean")
                 .HasValue<IntegerFieldReadModel>("Integer")
                 .HasValue<DecimalFieldReadModel>("Decimal")

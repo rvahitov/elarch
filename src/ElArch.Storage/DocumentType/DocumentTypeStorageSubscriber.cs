@@ -13,7 +13,8 @@ namespace ElArch.Storage.DocumentType
 {
     internal sealed class DocumentTypeStorageSubscriber : DomainEventSubscriber,
         ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, DocumentTypeCreated>,
-        ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, DocumentTypeNameChanged>
+        ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, DocumentTypeNameChanged>,
+        ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, DocumentTypeFieldAdded>
     {
         private readonly Props _handlerProps;
         private IActorRef _handler;
@@ -25,12 +26,13 @@ namespace ElArch.Storage.DocumentType
                     .WithRouter(new ConsistentHashingPool(10).WithHashMapping(Handler.GetConsistentHash));
         }
 
-        protected override void PreStart()
+        public bool Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeCreated> domainEvent)
         {
-            _handler = Context.ActorOf(_handlerProps);
+            _handler.Tell(domainEvent);
+            return true;
         }
 
-        public bool Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeCreated> domainEvent)
+        public bool Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeFieldAdded> domainEvent)
         {
             _handler.Tell(domainEvent);
             return true;
@@ -42,6 +44,11 @@ namespace ElArch.Storage.DocumentType
             return true;
         }
 
+        protected override void PreStart()
+        {
+            _handler = Context.ActorOf(_handlerProps);
+        }
+
         private sealed class Handler : ReceiveActor
         {
             private readonly Func<ElArchContext> _contextFactory;
@@ -51,6 +58,7 @@ namespace ElArch.Storage.DocumentType
                 _contextFactory = contextFactory;
                 Receive<IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeCreated>>(Handle);
                 Receive<IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeNameChanged>>(Handle);
+                Receive<IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeFieldAdded>>(Handle);
             }
 
             private void Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeCreated> domainEvent)
@@ -74,6 +82,20 @@ namespace ElArch.Storage.DocumentType
                 var model = context.Set<DocumentTypeReadModel>().FirstOrDefault(m => m.AggregateId == domainEvent.AggregateIdentity);
                 if (model == null) return;
                 model.Name = domainEvent.AggregateEvent.DocumentTypeName;
+                model.ModificationTime = domainEvent.Timestamp;
+                model.Version += 1;
+                context.SaveChanges();
+            }
+
+            private void Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeFieldAdded> domainEvent)
+            {
+                using var context = _contextFactory();
+                var model = context.Set<DocumentTypeReadModel>().FirstOrDefault(m => m.AggregateId == domainEvent.AggregateIdentity);
+                if (model == null) return;
+                var fieldReadModel = FieldReadModel.FromDomainModel(domainEvent.AggregateEvent.Field);
+                fieldReadModel.DocumentTypeId = domainEvent.AggregateIdentity;
+                fieldReadModel.CreationTime = domainEvent.Timestamp;
+                model.Fields.Add(fieldReadModel);
                 model.ModificationTime = domainEvent.Timestamp;
                 model.Version += 1;
                 context.SaveChanges();

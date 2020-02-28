@@ -35,5 +35,14 @@ namespace ElArch.WebApi.Controllers.DocumentTypes
             if (response.IsSuccess) return NoContent();
             return BadRequest(new {error = response.ToString()});
         }
+
+        [HttpPost("field/add")]
+        public async Task<IActionResult> AddField(AddDocumentTypeFieldRequest request, CancellationToken cancellationToken)
+        {
+            if (ModelState.IsValid == false) return BadRequest(ModelState);
+            var response = await _mediator.Send(request, cancellationToken).ConfigureAwait(false);
+            if (response.IsSuccess) return NoContent();
+            return BadRequest(new {error = response.ToString()});
+        }
     }
 }

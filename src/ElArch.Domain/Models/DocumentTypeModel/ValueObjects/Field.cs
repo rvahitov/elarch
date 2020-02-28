@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.Linq;
+// ReSharper disable ConstantConditionalAccessQualifier
 
 namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
 {

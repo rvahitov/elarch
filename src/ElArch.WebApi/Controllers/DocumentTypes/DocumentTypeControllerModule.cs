@@ -14,6 +14,8 @@ namespace ElArch.WebApi.Controllers.DocumentTypes
             builder.Register(_ => new ChangeDocumentTypeNameRequestValidator()).AsImplementedInterfaces();
             builder.Register(c => new AddDocumentTypeFieldRequestHandler(c.Resolve<IMediator>())).AsImplementedInterfaces();
             builder.Register(_ => new AddDocumentTypeFieldRequestValidator()).AsImplementedInterfaces();
+            builder.Register(c => new RemoveDocumentTypeFieldRequestHandler(c.Resolve<IMediator>())).AsImplementedInterfaces();
+            builder.Register(_ => new RemoveDocumentTypeFieldRequestValidator()).AsImplementedInterfaces();
         }
     }
 }

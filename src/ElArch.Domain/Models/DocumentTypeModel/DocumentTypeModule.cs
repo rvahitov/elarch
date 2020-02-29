@@ -22,6 +22,8 @@ namespace ElArch.Domain.Models.DocumentTypeModel
                 .AsImplementedInterfaces();
             builder.Register(c => new AddDocumentTypeFieldRequestHandler(c.ResolveKeyed<IActorRef>(typeof(DocumentTypeAggregateManager))))
                 .AsImplementedInterfaces();
+            builder.Register(c => new RemoveDocumentTypeFieldRequestHandler(c.ResolveKeyed<IActorRef>(typeof(DocumentTypeAggregateManager))))
+                .AsImplementedInterfaces();
         }
     }
 }

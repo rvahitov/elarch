@@ -13,7 +13,8 @@ namespace ElArch.Storage.DocumentType
     internal sealed class DocumentTypeStorageSubscriber : DomainEventSubscriber,
         ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, DocumentTypeCreated>,
         ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, DocumentTypeNameChanged>,
-        ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, DocumentTypeFieldAdded>
+        ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, DocumentTypeFieldAdded>,
+        ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, DocumentTypeFieldRemoved>
     {
         private readonly Props _handlerProps;
         private IActorRef _handler;
@@ -43,6 +44,12 @@ namespace ElArch.Storage.DocumentType
             return true;
         }
 
+        public bool Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeFieldRemoved> domainEvent)
+        {
+            _handler.Tell(domainEvent);
+            return true;
+        }
+
         protected override void PreStart()
         {
             _handler = Context.ActorOf(_handlerProps);
@@ -58,6 +65,7 @@ namespace ElArch.Storage.DocumentType
                 Receive<IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeCreated>>(Handle);
                 Receive<IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeNameChanged>>(Handle);
                 Receive<IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeFieldAdded>>(Handle);
+                Receive<IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeFieldRemoved>>(Handle);
             }
 
             private void Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeCreated> domainEvent)
@@ -95,6 +103,19 @@ namespace ElArch.Storage.DocumentType
                 fieldReadModel.DocumentTypeId = domainEvent.AggregateIdentity;
                 fieldReadModel.CreationTime = domainEvent.Timestamp;
                 model.Fields.Add(fieldReadModel);
+                model.ModificationTime = domainEvent.Timestamp;
+                model.Version += 1;
+                context.SaveChanges();
+            }
+
+            private void Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeFieldRemoved> domainEvent)
+            {
+                using var context = _contextFactory();
+                var model = context.Find<DocumentTypeReadModel>(domainEvent.AggregateIdentity);
+                if (model == null) return;
+                var fieldReadModel = context.Find<FieldReadModel>(domainEvent.AggregateEvent.Field.FieldId, domainEvent.AggregateIdentity);
+                if (fieldReadModel == null) return;
+                model.Fields.Remove(fieldReadModel);
                 model.ModificationTime = domainEvent.Timestamp;
                 model.Version += 1;
                 context.SaveChanges();

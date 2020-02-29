@@ -9,7 +9,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel
     [UsedImplicitly]
     public sealed class DocumentTypeAggregateState : AggregateState<DocumentTypeAggregate, DocumentTypeId>,
         IEmit<DocumentTypeCreated>, IEmit<DocumentTypeNameChanged>,
-        IEmit<DocumentTypeFieldAdded>
+        IEmit<DocumentTypeFieldAdded>, IEmit<DocumentTypeFieldRemoved>
     {
         public DocumentTypeName? DocumentTypeName { get; private set; }
 
@@ -28,6 +28,11 @@ namespace ElArch.Domain.Models.DocumentTypeModel
         public void Apply(DocumentTypeNameChanged aggregateEvent)
         {
             DocumentTypeName = aggregateEvent.DocumentTypeName;
+        }
+
+        public void Apply(DocumentTypeFieldRemoved aggregateEvent)
+        {
+            Fields = Fields.Remove(aggregateEvent.Field.FieldId);
         }
     }
 }

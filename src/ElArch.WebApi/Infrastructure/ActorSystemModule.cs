@@ -13,7 +13,7 @@ namespace ElArch.WebApi.Infrastructure
         private static Config ReadConfiguration(IHostEnvironment environment)
         {
             var sb = new StringBuilder();
-            var persistence = Path.Combine(environment.ContentRootPath, @"akka_persistence_sqlserver.hocon");
+            var persistence = Path.Combine(environment.ContentRootPath, @"akka_persistence_postgres.hocon");
             if (File.Exists(persistence))
             {
                 sb.AppendLine(File.ReadAllText(persistence));

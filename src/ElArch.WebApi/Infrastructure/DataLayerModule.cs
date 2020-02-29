@@ -14,7 +14,9 @@ namespace ElArch.WebApi.Infrastructure
                     var config = c.Resolve<IConfiguration>();
                     var connectionString = config.GetConnectionString("DomainStorage");
                     var contextOptionsBuilder = new DbContextOptionsBuilder<ElArchContext>();
-                    contextOptionsBuilder.UseSqlServer(connectionString);
+                    contextOptionsBuilder
+                        // .UseSqlServer(connectionString)
+                        .UseNpgsql(connectionString);
                     return contextOptionsBuilder.Options;
                 })
                 .SingleInstance();

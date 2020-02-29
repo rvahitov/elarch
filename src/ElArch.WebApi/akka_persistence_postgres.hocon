@@ -10,7 +10,7 @@ akka.persistence{
 			plugin-dispatcher = "akka.actor.default-dispatcher"
 
 			# connection string used for database access
-			connection-string = ""
+			connection-string = ${ConnectionStrings.DomainStorage}
 
 			# default SQL commands timeout
 			connection-timeout = 30s
@@ -45,7 +45,7 @@ akka.persistence{
 			plugin-dispatcher = ""akka.actor.default-dispatcher""
 
 			# connection string used for database access
-			connection-string = ""
+			connection-string = ${ConnectionStrings.DomainStorage}
 
 			# default SQL commands timeout
 			connection-timeout = 30s

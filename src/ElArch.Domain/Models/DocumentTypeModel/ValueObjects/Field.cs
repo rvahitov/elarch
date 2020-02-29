@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using Newtonsoft.Json;
+
 // ReSharper disable ConstantConditionalAccessQualifier
 
 namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
@@ -40,6 +43,11 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
 
     public sealed class BooleanField : Field<BooleanField, bool>
     {
+        [JsonConstructor]
+        private BooleanField(FieldId fieldId, IEnumerable<IFieldValueValidator> validators) : this(fieldId, validators.ToImmutableList())
+        {
+        }
+
         public BooleanField(FieldId fieldId, ImmutableList<IFieldValueValidator> validators) : base(fieldId, validators)
         {
         }
@@ -89,6 +97,11 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
 
     public sealed class IntegerField : ValueRangeField<IntegerField, int>
     {
+        [JsonConstructor]
+        private IntegerField(FieldId fieldId, IEnumerable<IFieldValueValidator> validators) : this(fieldId, validators.ToImmutableList())
+        {
+        }
+
         public IntegerField(FieldId fieldId, ImmutableList<IFieldValueValidator> validators) : base(fieldId, validators)
         {
         }
@@ -100,6 +113,11 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
 
     public sealed class DecimalField : ValueRangeField<DecimalField, decimal>
     {
+        [JsonConstructor]
+        private DecimalField(FieldId fieldId, IEnumerable<IFieldValueValidator> validators) : this(fieldId, validators.ToImmutableList())
+        {
+        }
+
         public DecimalField(FieldId fieldId, ImmutableList<IFieldValueValidator> validators) : base(fieldId, validators)
         {
         }
@@ -111,6 +129,11 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
 
     public sealed class DateTimeField : ValueRangeField<DateTimeField, DateTimeOffset>
     {
+        [JsonConstructor]
+        private DateTimeField(FieldId fieldId, IEnumerable<IFieldValueValidator> validators) : this(fieldId, validators.ToImmutableList())
+        {
+        }
+
         public DateTimeField(FieldId fieldId, ImmutableList<IFieldValueValidator> validators) : base(fieldId, validators)
         {
         }
@@ -122,6 +145,11 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
 
     public sealed class TextField : Field<TextField, string>
     {
+        [JsonConstructor]
+        private TextField(FieldId fieldId, IEnumerable<IFieldValueValidator> validators) : this(fieldId, validators.ToImmutableList())
+        {
+        }
+
         public TextField(FieldId fieldId, ImmutableList<IFieldValueValidator> validators) : base(fieldId, validators)
         {
         }

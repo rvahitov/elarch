@@ -9,8 +9,8 @@ namespace ElArch.Storage.DocumentType.ReadModels
 {
     public class DocumentTypeReadModel
     {
-        public int Id { get; internal set; }
-        public DocumentTypeId AggregateId { get; internal set; }
+        public DocumentTypeId Id { get; internal set; }
+        public int SequenceNumber { get; internal set; }
         public DocumentTypeName Name { get; internal set; }
         public DateTimeOffset CreationTime { get; internal set; }
         public DateTimeOffset ModificationTime { get; internal set; }
@@ -26,9 +26,9 @@ namespace ElArch.Storage.DocumentType.ReadModels
         {
             builder.ToTable("DocumentType");
             builder.HasKey(e => e.Id);
-            builder.Property(e => e.Id).ValueGeneratedOnAdd();
-            builder.Property(e => e.AggregateId)
+            builder.Property(e => e.Id)
                 .HasConversion(id => id.Value, value => DocumentTypeId.With(value));
+            builder.Property(e => e.SequenceNumber).ValueGeneratedOnAdd();
             builder.Property(e => e.Name)
                 .HasConversion(name => name.Value, value => new DocumentTypeName(value));
             builder.Property(e => e.Version).IsConcurrencyToken();

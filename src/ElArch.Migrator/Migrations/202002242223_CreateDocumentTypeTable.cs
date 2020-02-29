@@ -8,11 +8,11 @@ namespace ElArch.Migrator.Migrations
         public override void Up()
         {
             Create.Table("DocumentType")
-                .WithColumn("Id").AsInt32().Identity().PrimaryKey()
-                .WithColumn("AggregateId").AsString(256).NotNullable().Unique()
+                .WithColumn("Id").AsString(256).PrimaryKey()
                 .WithColumn("Name").AsString(128).NotNullable()
                 .WithColumn("CreationTime").AsDateTimeOffset().NotNullable()
                 .WithColumn("ModificationTime").AsDateTimeOffset().NotNullable()
+                .WithColumn("SequenceNumber").AsInt32().Identity()
                 .WithColumn("Version").AsInt32().NotNullable();
         }
     }

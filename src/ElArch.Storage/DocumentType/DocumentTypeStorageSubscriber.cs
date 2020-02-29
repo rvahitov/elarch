@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using Akka.Actor;
 using Akka.Routing;
 using Akkatecture.Aggregates;
@@ -65,7 +64,7 @@ namespace ElArch.Storage.DocumentType
             {
                 var model = new DocumentTypeReadModel
                 {
-                    AggregateId = domainEvent.AggregateIdentity,
+                    Id = domainEvent.AggregateIdentity,
                     Name = domainEvent.AggregateEvent.DocumentTypeName,
                     CreationTime = domainEvent.Timestamp,
                     ModificationTime = domainEvent.Timestamp,
@@ -79,7 +78,7 @@ namespace ElArch.Storage.DocumentType
             private void Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeNameChanged> domainEvent)
             {
                 using var context = _contextFactory();
-                var model = context.Set<DocumentTypeReadModel>().FirstOrDefault(m => m.AggregateId == domainEvent.AggregateIdentity);
+                var model = context.Find<DocumentTypeReadModel>(domainEvent.AggregateIdentity);
                 if (model == null) return;
                 model.Name = domainEvent.AggregateEvent.DocumentTypeName;
                 model.ModificationTime = domainEvent.Timestamp;
@@ -90,7 +89,7 @@ namespace ElArch.Storage.DocumentType
             private void Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeFieldAdded> domainEvent)
             {
                 using var context = _contextFactory();
-                var model = context.Set<DocumentTypeReadModel>().FirstOrDefault(m => m.AggregateId == domainEvent.AggregateIdentity);
+                var model = context.Find<DocumentTypeReadModel>(domainEvent.AggregateIdentity);
                 if (model == null) return;
                 var fieldReadModel = FieldReadModel.FromDomainModel(domainEvent.AggregateEvent.Field);
                 fieldReadModel.DocumentTypeId = domainEvent.AggregateIdentity;

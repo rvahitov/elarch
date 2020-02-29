@@ -25,6 +25,9 @@
     <None Update="akka_persistence_sqlserver.hocon">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="akka_persistence_postgres.hocon">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 

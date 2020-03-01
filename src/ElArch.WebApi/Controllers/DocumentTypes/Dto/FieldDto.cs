@@ -33,7 +33,7 @@ namespace ElArch.WebApi.Controllers.DocumentTypes.Dto
                 FieldType.Boolean => new BooleanField(fieldId).IsRequired(IsRequired),
                 FieldType.Integer => new IntegerField(fieldId).IsRequired(IsRequired).MinValue(MinValue?.Value<int?>()).MaxValue(MaxValue?.Value<int?>()),
                 FieldType.Decimal => new DecimalField(fieldId).IsRequired(IsRequired).MinValue(MinValue?.Value<decimal?>()).MaxValue(MaxValue?.Value<decimal>()),
-                FieldType.DateTime => new DateTimeField(fieldId).IsRequired(IsRequired).MinValue(MinValue?.Value<DateTimeOffset?>()).MaxValue(MaxValue?.Value<DateTimeOffset?>()),
+                FieldType.DateTime => new DateTimeField(fieldId).IsRequired(IsRequired).MinValue(MinValue?.Value<DateTime?>()).MaxValue(MaxValue?.Value<DateTime?>()),
                 FieldType.Text => new TextField(fieldId).IsRequired(IsRequired).MinLength(MinLength).MaxLength(MaxLength),
                 _ => throw new ArgumentOutOfRangeException()
             };
@@ -61,9 +61,9 @@ namespace ElArch.WebApi.Controllers.DocumentTypes.Dto
             });
             When(f => f.FieldType == FieldType.DateTime, () =>
             {
-                RuleFor(f => f.MinValue).Must(v => v?.Value == null || v.Value<DateTimeOffset?>() != null)
+                RuleFor(f => f.MinValue).Must(v => v?.Value == null || v.Value<DateTime?>() != null)
                     .WithMessage("MinValue should be null or DateTimeOffset");
-                RuleFor(f => f.MaxValue).Must(v => v?.Value == null || v.Value<DateTimeOffset?>() != null)
+                RuleFor(f => f.MaxValue).Must(v => v?.Value == null || v.Value<DateTime?>() != null)
                     .WithMessage("MaxValue should be null or DateTimeOffset");
             });
         }

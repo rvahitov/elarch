@@ -18,19 +18,30 @@ namespace ElArch.Storage.DocumentType.ReadModels
             {
                 null => throw new ArgumentNullException(nameof(field)),
                 BooleanField booleanField => new BooleanFieldReadModel {FieldId = booleanField.FieldId, IsRequired = booleanField.IsRequired()},
-                IntegerField integerField => new IntegerFieldReadModel {FieldId = integerField.FieldId, IsRequired = integerField.IsRequired(), MinValue = integerField.MinValue(), MaxValue = integerField.MaxValue()},
-                DecimalField decimalField => new DecimalFieldReadModel {FieldId = decimalField.FieldId, IsRequired = decimalField.IsRequired(), MinValue = decimalField.MinValue(), MaxValue = decimalField.MaxValue()},
-                DateTimeField dateTimeField => new DateTimeFieldReadModel {FieldId = dateTimeField.FieldId, IsRequired = dateTimeField.IsRequired(), MinValue = dateTimeField.MinValue(), MaxValue = dateTimeField.MaxValue()},
-                TextField textField => new TextFieldReadModel {FieldId = textField.FieldId, IsRequired = textField.IsRequired(), MaxLength = textField.MaxLength(), MinLength = textField.MinLength()},
+                IntegerField integerField => new IntegerFieldReadModel
+                    {FieldId = integerField.FieldId, IsRequired = integerField.IsRequired(), MinValue = integerField.MinValue(), MaxValue = integerField.MaxValue()},
+                DecimalField decimalField => new DecimalFieldReadModel
+                    {FieldId = decimalField.FieldId, IsRequired = decimalField.IsRequired(), MinValue = decimalField.MinValue(), MaxValue = decimalField.MaxValue()},
+                DateTimeField dateTimeField => new DateTimeFieldReadModel
+                    {FieldId = dateTimeField.FieldId, IsRequired = dateTimeField.IsRequired(), MinValue = dateTimeField.MinValue(), MaxValue = dateTimeField.MaxValue()},
+                StringField stringField => new StringFieldReadModel
+                    {FieldId = stringField.FieldId, IsRequired = stringField.IsRequired(), MinLength = stringField.MinLength(), MaxLength = stringField.MaxLength()},
+                TextField textField => new TextFieldReadModel
+                    {FieldId = textField.FieldId, IsRequired = textField.IsRequired(), MaxLength = textField.MaxLength(), MinLength = textField.MinLength()},
                 _ => throw new NotSupportedException($"Field of type {field.GetType()} is not supported")
             };
 
         public IField ToDomainModel() => this switch
         {
             BooleanFieldReadModel booleanField => new BooleanField(booleanField.FieldId).IsRequired(booleanField.IsRequired),
-            IntegerFieldReadModel integerField => new IntegerField(integerField.FieldId).IsRequired(integerField.IsRequired).MinValue(integerField.MinValue).MaxValue(integerField.MaxValue),
-            DecimalFieldReadModel decimalField => new DecimalField(decimalField.FieldId).IsRequired(decimalField.IsRequired).MinValue(decimalField.MinValue).MaxValue(decimalField.MaxValue),
-            DateTimeFieldReadModel dateTimeField => new DateTimeField(dateTimeField.FieldId).IsRequired(dateTimeField.IsRequired).MinValue(dateTimeField.MinValue).MaxValue(dateTimeField.MaxValue),
+            IntegerFieldReadModel integerField => new IntegerField(integerField.FieldId).IsRequired(integerField.IsRequired).MinValue(integerField.MinValue)
+                .MaxValue(integerField.MaxValue),
+            DecimalFieldReadModel decimalField => new DecimalField(decimalField.FieldId).IsRequired(decimalField.IsRequired).MinValue(decimalField.MinValue)
+                .MaxValue(decimalField.MaxValue),
+            DateTimeFieldReadModel dateTimeField => new DateTimeField(dateTimeField.FieldId).IsRequired(dateTimeField.IsRequired).MinValue(dateTimeField.MinValue)
+                .MaxValue(dateTimeField.MaxValue),
+            StringFieldReadModel stringField => new StringField(stringField.FieldId).IsRequired(stringField.IsRequired).MinLength(stringField.MinLength)
+                .MaxLength(stringField.MaxLength),
             TextFieldReadModel textField => new TextField(textField.FieldId).IsRequired(textField.IsRequired).MinLength(textField.MinLength).MaxLength(textField.MaxLength),
             _ => throw new NotSupportedException($"Field read model of type {GetType()} is not supported")
         };
@@ -65,6 +76,10 @@ namespace ElArch.Storage.DocumentType.ReadModels
         public int? MaxLength { get; set; }
     }
 
+    public class StringFieldReadModel : TextFieldReadModel
+    {
+    }
+
     internal sealed class FieldReadModelConfiguration : IEntityTypeConfiguration<FieldReadModel>
     {
         public void Configure(EntityTypeBuilder<FieldReadModel> builder)
@@ -78,7 +93,8 @@ namespace ElArch.Storage.DocumentType.ReadModels
                 .HasValue<IntegerFieldReadModel>("Integer")
                 .HasValue<DecimalFieldReadModel>("Decimal")
                 .HasValue<DateTimeFieldReadModel>("DateTime")
-                .HasValue<TextFieldReadModel>("Text");
+                .HasValue<TextFieldReadModel>("Text")
+                .HasValue<StringFieldReadModel>("String");
         }
     }
 

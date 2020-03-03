@@ -143,7 +143,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
         }
     }
 
-    public sealed class TextField : Field<TextField, string>
+    public class TextField : Field<TextField, string>
     {
         [JsonConstructor]
         private TextField(FieldId fieldId, IEnumerable<IFieldValueValidator> validators) : this(fieldId, validators.ToImmutableList())
@@ -159,7 +159,9 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
         }
 
         public int? MinLength() => Validators.OfType<FieldMinLengthValidator>().FirstOrDefault()?.MinLength;
-        public int? MaxLength() => Validators.OfType<FieldMaxLengthValidator>().FirstOrDefault()?.MaxLength;
+        public int? MaxLength() => Validators.OfType<FieldMaxLengthValidator>().FirstOrDefault()?.MaxLength ?? MaxAllowedLength;
+
+        public virtual int? MaxAllowedLength => null;
 
         public TextField MinLength(int? minLength)
         {
@@ -176,6 +178,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
         public TextField MaxLength(int? maxLength)
         {
             if (maxLength <= 0) throw new ArgumentOutOfRangeException(nameof(maxLength));
+            if (maxLength >= MaxAllowedLength) throw new ArgumentException($"Value exceeds max allowed length {MaxAllowedLength}", nameof(maxLength));
             var currentMaxLength = MaxLength();
             if (Nullable.Equals(currentMaxLength, maxLength)) return this;
             var currentMinLength = MinLength();
@@ -184,5 +187,23 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
             var validators = maxLength == null ? Validators.RemoveAll(v => v is FieldMaxLengthValidator) : Validators.Add(new FieldMaxLengthValidator(maxLength.Value));
             return new TextField(FieldId, validators);
         }
+    }
+
+    public sealed class StringField : TextField
+    {
+        [JsonConstructor]
+        private StringField(FieldId fieldId, IEnumerable<IFieldValueValidator> validators) : this(fieldId, validators.ToImmutableList())
+        {
+        }
+
+        public StringField(FieldId fieldId, ImmutableList<IFieldValueValidator> validators) : base(fieldId, validators)
+        {
+        }
+
+        public StringField(FieldId fieldId) : base(fieldId)
+        {
+        }
+
+        public override int? MaxAllowedLength => 500;
     }
 }

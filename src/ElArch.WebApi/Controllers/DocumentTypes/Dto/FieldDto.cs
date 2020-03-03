@@ -12,7 +12,8 @@ namespace ElArch.WebApi.Controllers.DocumentTypes.Dto
         Integer,
         Decimal,
         DateTime,
-        Text
+        Text,
+        String
     }
 
     public sealed class FieldDto
@@ -35,6 +36,7 @@ namespace ElArch.WebApi.Controllers.DocumentTypes.Dto
                 FieldType.Decimal => new DecimalField(fieldId).IsRequired(IsRequired).MinValue(MinValue?.Value<decimal?>()).MaxValue(MaxValue?.Value<decimal>()),
                 FieldType.DateTime => new DateTimeField(fieldId).IsRequired(IsRequired).MinValue(MinValue?.Value<DateTime?>()).MaxValue(MaxValue?.Value<DateTime?>()),
                 FieldType.Text => new TextField(fieldId).IsRequired(IsRequired).MinLength(MinLength).MaxLength(MaxLength),
+                FieldType.String => new StringField(fieldId).IsRequired(IsRequired).MaxLength(MinLength).MaxLength(MaxLength),
                 _ => throw new ArgumentOutOfRangeException()
             };
         }
@@ -42,6 +44,13 @@ namespace ElArch.WebApi.Controllers.DocumentTypes.Dto
 
     public sealed class FieldDtoValidator : AbstractValidator<FieldDto>
     {
+        private static readonly int MaxAllowedMaxLength;
+
+        static FieldDtoValidator()
+        {
+            MaxAllowedMaxLength = new StringField(new FieldId("Validator")).MaxAllowedLength ?? int.MaxValue;
+        }
+
         public FieldDtoValidator()
         {
             RuleFor(f => f.FieldId).NotEmpty().MaximumLength(128);
@@ -66,6 +75,9 @@ namespace ElArch.WebApi.Controllers.DocumentTypes.Dto
                 RuleFor(f => f.MaxValue).Must(v => v?.Value == null || v.Value<DateTime?>() != null)
                     .WithMessage("MaxValue should be null or DateTimeOffset");
             });
+            When(f => (f.FieldType == FieldType.String || f.FieldType == FieldType.Text) && f.MinLength != null && f.MaxLength != null,
+                () => { RuleFor(f => f.MinLength).LessThanOrEqualTo(f => f.MaxLength); });
+            When(f => f.FieldType == FieldType.String, () => { RuleFor(f => f.MaxLength).LessThanOrEqualTo(MaxAllowedMaxLength); });
         }
     }
 }

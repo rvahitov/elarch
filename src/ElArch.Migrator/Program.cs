@@ -11,7 +11,7 @@ namespace ElArch.Migrator
         private static void Main(string[] args)
         {
             var configuration = BuildConfiguration(args);
-            var connectionString = configuration.GetValue<string>("PostgresConnection");
+            var connectionString = configuration.GetValue<string>("SqlConnection");
             var task = configuration.GetValue<string>("task");
             var services = CreateServices(connectionString);
             using var scope = services.CreateScope();
@@ -34,8 +34,8 @@ namespace ElArch.Migrator
                 .ConfigureRunner(runnerBuilder =>
                 {
                     runnerBuilder
-                        .AddPostgres()
-                        // .AddSqlServer()
+                        // .AddPostgres()
+                        .AddSqlServer()
                         .WithGlobalConnectionString(connectionString)
                         .ScanIn(typeof(Program).Assembly).For.Migrations();
                 })

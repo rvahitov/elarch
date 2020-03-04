@@ -1,6 +1,7 @@
 #nullable enable
 using Akkatecture.Core;
 using Akkatecture.ValueObjects;
+using MassTransit;
 using Newtonsoft.Json;
 
 namespace ElArch.Domain.Models.DocumentTypeModel
@@ -11,5 +12,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel
         public DocumentTypeId(string value) : base(value)
         {
         }
+
+        public static DocumentTypeId CreateNew() => With(NewId.NextGuid());
     }
 }

@@ -18,6 +18,9 @@ namespace ElArch.Storage.DocumentType.ReadModels
 
         public virtual ICollection<FieldReadModel> Fields { get; private set; } =
             new List<FieldReadModel>();
+        
+        public virtual ICollection<DocumentViewReadModel> DocumentViews { get; private set; } =
+            new List<DocumentViewReadModel>();
     }
 
     internal sealed class DocumentTypeReadModelConfiguration : IEntityTypeConfiguration<DocumentTypeReadModel>
@@ -35,6 +38,8 @@ namespace ElArch.Storage.DocumentType.ReadModels
             builder.HasMany(e => e.Fields)
                 .WithOne().IsRequired().HasForeignKey(f => f.DocumentTypeId)
                 .OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(e => e.DocumentViews).WithOne().IsRequired()
+                .HasForeignKey(v => v.DocumentTypeId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

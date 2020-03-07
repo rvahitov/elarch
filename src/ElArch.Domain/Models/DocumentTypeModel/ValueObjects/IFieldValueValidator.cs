@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using JetBrains.Annotations;
 using OneOf;
 using OneOf.Types;
@@ -7,12 +8,12 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
 {
     public interface IFieldValueValidator
     {
-        OneOf<object?, Error<string>> Validate(FieldId fieldId, object? value);
+        OneOf<object?, Error<string>> Validate([NotNull] FieldId fieldId, [CanBeNull] object? value);
     }
 
     public sealed class RequiredFieldValueValidator : IFieldValueValidator
     {
-        public OneOf<object?, Error<string>> Validate([NotNull] FieldId fieldId, object? value)
+        public OneOf<object?, Error<string>> Validate(FieldId fieldId, object? value)
         {
             if (fieldId == null) throw new ArgumentNullException(nameof(fieldId));
             return value is null

@@ -14,7 +14,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
             Value = value;
         }
 
-        public string Value { get; }
+        [NotNull] public string Value { get; }
         public override string ToString() => Value;
 
         public bool Equals(FieldId? other)
@@ -24,6 +24,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
             return string.Equals(Value, other.Value, StringComparison.OrdinalIgnoreCase);
         }
 
+        [NotNull]
         public object GetValue() => Value;
 
         public override bool Equals(object? obj) => ReferenceEquals(this, obj) || obj is FieldId other && Equals(other);

@@ -1,13 +1,14 @@
-#nullable enable
 using System;
 using Akkatecture.ValueObjects;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
 {
-    public sealed class DocumentTypeName : SingleValueObject<string>
+    [JsonConverter(typeof(SingleValueObjectConverter))]
+    public sealed class ViewFieldTitle: SingleValueObject<string>
     {
-        public DocumentTypeName([NotNull] string value) : base(value)
+        public ViewFieldTitle([NotNull] string value) : base(value)
         {
             if (string.IsNullOrEmpty(value)) throw new ArgumentException("Value cannot be null or empty.", nameof(value));
         }

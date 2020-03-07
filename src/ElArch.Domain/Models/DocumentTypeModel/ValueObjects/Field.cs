@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 // ReSharper disable ConstantConditionalAccessQualifier
@@ -10,20 +11,20 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
 {
     public interface IField
     {
-        FieldId FieldId { get; }
-        ImmutableList<IFieldValueValidator> Validators { get; }
+        [NotNull] FieldId FieldId { get; }
+        [NotNull] ImmutableList<IFieldValueValidator> Validators { get; }
     }
 
     public abstract class Field<TField, T> : IField where TField : Field<TField, T>
     {
-        protected Field(FieldId fieldId, ImmutableList<IFieldValueValidator> validators)
+        protected Field([NotNull] FieldId fieldId, [NotNull] ImmutableList<IFieldValueValidator> validators)
         {
             FieldId = fieldId ?? throw new ArgumentNullException(nameof(fieldId));
             if (validators == null) throw new ArgumentNullException(nameof(validators));
             Validators = validators.RemoveAll(v => v is FieldValueOfTypeValidator<T>).Add(new FieldValueOfTypeValidator<T>());
         }
 
-        protected Field(FieldId fieldId) : this(fieldId, ImmutableList<IFieldValueValidator>.Empty)
+        protected Field([NotNull] FieldId fieldId) : this(fieldId, ImmutableList<IFieldValueValidator>.Empty)
         {
         }
 
@@ -32,6 +33,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
 
         public bool IsRequired() => Validators.Any(v => v is RequiredFieldValueValidator);
 
+        [NotNull]
         public TField IsRequired(bool value)
         {
             if (IsRequired() == value) return (TField) this;
@@ -44,15 +46,17 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
     public sealed class BooleanField : Field<BooleanField, bool>
     {
         [JsonConstructor]
-        private BooleanField(FieldId fieldId, IEnumerable<IFieldValueValidator> validators) : this(fieldId, validators.ToImmutableList())
+        private BooleanField([NotNull] FieldId fieldId, [NotNull] IEnumerable<IFieldValueValidator> validators)
+            : this(fieldId, validators.ToImmutableList())
         {
         }
 
-        public BooleanField(FieldId fieldId, ImmutableList<IFieldValueValidator> validators) : base(fieldId, validators)
+        public BooleanField([NotNull] FieldId fieldId, [NotNull] ImmutableList<IFieldValueValidator> validators)
+            : base(fieldId, validators)
         {
         }
 
-        public BooleanField(FieldId fieldId) : base(fieldId)
+        public BooleanField([NotNull] FieldId fieldId) : base(fieldId)
         {
         }
     }
@@ -61,17 +65,19 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
         where TField : ValueRangeField<TField, T>
         where T : struct, IComparable<T>
     {
-        protected ValueRangeField(FieldId fieldId, ImmutableList<IFieldValueValidator> validators) : base(fieldId, validators)
+        protected ValueRangeField([NotNull] FieldId fieldId, [NotNull] ImmutableList<IFieldValueValidator> validators)
+            : base(fieldId, validators)
         {
         }
 
-        protected ValueRangeField(FieldId fieldId) : base(fieldId)
+        protected ValueRangeField([NotNull] FieldId fieldId) : base(fieldId)
         {
         }
 
         public T? MinValue() => Validators.OfType<FieldMinValueValidator<T>>().FirstOrDefault()?.MinValue;
         public T? MaxValue() => Validators.OfType<FieldMaxValueValidator<T>>().FirstOrDefault()?.MaxValue;
 
+        [NotNull]
         public TField MinValue(T? minValue)
         {
             var currentMinValue = MinValue();
@@ -83,6 +89,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
             return (TField) Activator.CreateInstance(typeof(TField), FieldId, validators);
         }
 
+        [NotNull]
         public TField MaxValue(T? maxValue)
         {
             var currentMaxValue = MaxValue();
@@ -102,11 +109,11 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
         {
         }
 
-        public IntegerField(FieldId fieldId, ImmutableList<IFieldValueValidator> validators) : base(fieldId, validators)
+        public IntegerField([NotNull] FieldId fieldId, [NotNull] ImmutableList<IFieldValueValidator> validators) : base(fieldId, validators)
         {
         }
 
-        public IntegerField(FieldId fieldId) : base(fieldId)
+        public IntegerField([NotNull] FieldId fieldId) : base(fieldId)
         {
         }
     }
@@ -118,11 +125,11 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
         {
         }
 
-        public DecimalField(FieldId fieldId, ImmutableList<IFieldValueValidator> validators) : base(fieldId, validators)
+        public DecimalField([NotNull] FieldId fieldId, [NotNull] ImmutableList<IFieldValueValidator> validators) : base(fieldId, validators)
         {
         }
 
-        public DecimalField(FieldId fieldId) : base(fieldId)
+        public DecimalField([NotNull] FieldId fieldId) : base(fieldId)
         {
         }
     }
@@ -134,11 +141,11 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
         {
         }
 
-        public DateTimeField(FieldId fieldId, ImmutableList<IFieldValueValidator> validators) : base(fieldId, validators)
+        public DateTimeField([NotNull] FieldId fieldId, [NotNull] ImmutableList<IFieldValueValidator> validators) : base(fieldId, validators)
         {
         }
 
-        public DateTimeField(FieldId fieldId) : base(fieldId)
+        public DateTimeField([NotNull] FieldId fieldId) : base(fieldId)
         {
         }
     }
@@ -150,11 +157,11 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
         {
         }
 
-        public TextField(FieldId fieldId, ImmutableList<IFieldValueValidator> validators) : base(fieldId, validators)
+        public TextField([NotNull] FieldId fieldId, [NotNull] ImmutableList<IFieldValueValidator> validators) : base(fieldId, validators)
         {
         }
 
-        public TextField(FieldId fieldId) : base(fieldId)
+        public TextField([NotNull] FieldId fieldId) : base(fieldId)
         {
         }
 
@@ -163,6 +170,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
 
         public virtual int? MaxAllowedLength => null;
 
+        [NotNull]
         public TextField MinLength(int? minLength)
         {
             if (minLength <= 0) throw new ArgumentOutOfRangeException(nameof(minLength));
@@ -175,6 +183,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
             return new TextField(FieldId, validators);
         }
 
+        [NotNull]
         public TextField MaxLength(int? maxLength)
         {
             if (maxLength <= 0) throw new ArgumentOutOfRangeException(nameof(maxLength));
@@ -196,11 +205,11 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
         {
         }
 
-        public StringField(FieldId fieldId, ImmutableList<IFieldValueValidator> validators) : base(fieldId, validators)
+        public StringField([NotNull] FieldId fieldId, [NotNull] ImmutableList<IFieldValueValidator> validators) : base(fieldId, validators)
         {
         }
 
-        public StringField(FieldId fieldId) : base(fieldId)
+        public StringField([NotNull] FieldId fieldId) : base(fieldId)
         {
         }
 

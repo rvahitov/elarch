@@ -14,7 +14,8 @@ namespace ElArch.Storage.DocumentType
         ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, DocumentTypeFieldAdded>,
         ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, DocumentTypeFieldRemoved>,
         ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, SearchViewChanged>,
-        ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, GridViewChanged>
+        ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, GridViewChanged>,
+        ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, CardViewChanged>
     {
         private readonly Props _handlerProps;
         private IActorRef _handler;
@@ -60,6 +61,11 @@ namespace ElArch.Storage.DocumentType
         {
             _handler.Tell(domainEvent);
             return true;
+        }
+
+        public bool Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, CardViewChanged> domainEvent)
+        {
+            throw new System.NotImplementedException();
         }
 
         protected override void PreStart()

@@ -15,6 +15,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel
             Command<RemoveDocumentTypeField, RemoveDocumentTypeFieldHandler>();
             Command<SetSearchView, SetSearchViewHandler>();
             Command<SetGridView, SetGridViewHandler>();
+            Command<SetCardView, SetCardViewHandler>();
         }
     }
 }

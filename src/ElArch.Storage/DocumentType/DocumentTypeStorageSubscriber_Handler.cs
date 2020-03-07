@@ -24,6 +24,7 @@ namespace ElArch.Storage.DocumentType
                 Receive<IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeFieldRemoved>>(Handle);
                 Receive<IDomainEvent<DocumentTypeAggregate, DocumentTypeId, SearchViewChanged>>(Handle);
                 Receive<IDomainEvent<DocumentTypeAggregate, DocumentTypeId, GridViewChanged>>(Handle);
+                Receive<IDomainEvent<DocumentTypeAggregate, DocumentTypeId, CardViewChanged>>(Handle);
             }
 
             private void Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeCreated> domainEvent)
@@ -151,6 +152,40 @@ namespace ElArch.Storage.DocumentType
                 model.Version += 1;
                 context.SaveChanges();
                 unitOfWork.Complete();
+            }
+
+            private void Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, CardViewChanged> domainEvent)
+            {
+                using var unitOfWork = new TransactionScope(TransactionScopeOption.RequiresNew);
+                using var context = _contextFactory();
+                var model = context.Find<DocumentTypeReadModel>(domainEvent.AggregateIdentity);
+                if (model == null) return;
+                var oldSearchViewModels = (
+                    from dt in context.Set<DocumentTypeReadModel>()
+                    from dv in dt.DocumentViews.OfType<CardViewReadModel>()
+                    where dt.Id == domainEvent.AggregateIdentity
+                    select dv
+                );
+                foreach (var documentView in oldSearchViewModels)
+                {
+                    model.DocumentViews.Remove(documentView);
+                }
+
+                context.SaveChanges();
+                if (domainEvent.AggregateEvent.CardView == null)
+                {
+                    unitOfWork.Complete();
+                    return;
+                }
+
+                var newDocumentView = DocumentViewReadModel.FromDomainModel(domainEvent.AggregateEvent.CardView);
+                newDocumentView.DocumentTypeId = model.Id;
+                model.DocumentViews.Add(newDocumentView);
+                model.ModificationTime = domainEvent.Timestamp;
+                model.Version += 1;
+                context.SaveChanges();
+                unitOfWork.Complete();
+                
             }
 
             public static object GetConsistentHash(object o) => o switch

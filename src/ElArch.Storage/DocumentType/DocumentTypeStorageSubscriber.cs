@@ -13,7 +13,8 @@ namespace ElArch.Storage.DocumentType
         ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, DocumentTypeNameChanged>,
         ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, DocumentTypeFieldAdded>,
         ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, DocumentTypeFieldRemoved>,
-        ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, SearchViewChanged>
+        ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, SearchViewChanged>,
+        ISubscribeTo<DocumentTypeAggregate, DocumentTypeId, GridViewChanged>
     {
         private readonly Props _handlerProps;
         private IActorRef _handler;
@@ -50,6 +51,12 @@ namespace ElArch.Storage.DocumentType
         }
 
         public bool Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, SearchViewChanged> domainEvent)
+        {
+            _handler.Tell(domainEvent);
+            return true;
+        }
+
+        public bool Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, GridViewChanged> domainEvent)
         {
             _handler.Tell(domainEvent);
             return true;

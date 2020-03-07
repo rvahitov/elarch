@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Transactions;
 using Akka.Actor;
 using Akkatecture.Aggregates;
 using ElArch.Domain.Models.DocumentTypeModel;
@@ -22,10 +23,12 @@ namespace ElArch.Storage.DocumentType
                 Receive<IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeFieldAdded>>(Handle);
                 Receive<IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeFieldRemoved>>(Handle);
                 Receive<IDomainEvent<DocumentTypeAggregate, DocumentTypeId, SearchViewChanged>>(Handle);
+                Receive<IDomainEvent<DocumentTypeAggregate, DocumentTypeId, GridViewChanged>>(Handle);
             }
 
             private void Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeCreated> domainEvent)
             {
+                using var unitOfWork = new TransactionScope(TransactionScopeOption.RequiresNew);
                 var model = new DocumentTypeReadModel
                 {
                     Id = domainEvent.AggregateIdentity,
@@ -37,10 +40,12 @@ namespace ElArch.Storage.DocumentType
                 using var context = _contextFactory();
                 context.Add(model);
                 context.SaveChanges();
+                unitOfWork.Complete();
             }
 
             private void Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeNameChanged> domainEvent)
             {
+                using var unitOfWork = new TransactionScope(TransactionScopeOption.RequiresNew);
                 using var context = _contextFactory();
                 var model = context.Find<DocumentTypeReadModel>(domainEvent.AggregateIdentity);
                 if (model == null) return;
@@ -48,10 +53,12 @@ namespace ElArch.Storage.DocumentType
                 model.ModificationTime = domainEvent.Timestamp;
                 model.Version += 1;
                 context.SaveChanges();
+                unitOfWork.Complete();
             }
 
             private void Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeFieldAdded> domainEvent)
             {
+                using var unitOfWork = new TransactionScope(TransactionScopeOption.RequiresNew);
                 using var context = _contextFactory();
                 var model = context.Find<DocumentTypeReadModel>(domainEvent.AggregateIdentity);
                 if (model == null) return;
@@ -62,10 +69,12 @@ namespace ElArch.Storage.DocumentType
                 model.ModificationTime = domainEvent.Timestamp;
                 model.Version += 1;
                 context.SaveChanges();
+                unitOfWork.Complete();
             }
 
             private void Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, DocumentTypeFieldRemoved> domainEvent)
             {
+                using var unitOfWork = new TransactionScope(TransactionScopeOption.RequiresNew);
                 using var context = _contextFactory();
                 var model = context.Find<DocumentTypeReadModel>(domainEvent.AggregateIdentity);
                 if (model == null) return;
@@ -75,10 +84,12 @@ namespace ElArch.Storage.DocumentType
                 model.ModificationTime = domainEvent.Timestamp;
                 model.Version += 1;
                 context.SaveChanges();
+                unitOfWork.Complete();
             }
 
             private void Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, SearchViewChanged> domainEvent)
             {
+                using var unitOfWork = new TransactionScope(TransactionScopeOption.RequiresNew);
                 using var context = _contextFactory();
                 var model = context.Find<DocumentTypeReadModel>(domainEvent.AggregateIdentity);
                 if (model == null) return;
@@ -92,6 +103,13 @@ namespace ElArch.Storage.DocumentType
                 {
                     model.DocumentViews.Remove(documentView);
                 }
+                context.SaveChanges();
+
+                if (domainEvent.AggregateEvent.SearchView == null)
+                {
+                    unitOfWork.Complete();
+                    return;
+                }
 
                 var newDocumentView = DocumentViewReadModel.FromDomainModel(domainEvent.AggregateEvent.SearchView);
                 newDocumentView.DocumentTypeId = model.Id;
@@ -99,6 +117,40 @@ namespace ElArch.Storage.DocumentType
                 model.ModificationTime = domainEvent.Timestamp;
                 model.Version += 1;
                 context.SaveChanges();
+                unitOfWork.Complete();
+            }
+
+            private void Handle(IDomainEvent<DocumentTypeAggregate, DocumentTypeId, GridViewChanged> domainEvent)
+            {
+                using var unitOfWork = new TransactionScope(TransactionScopeOption.RequiresNew);
+                using var context = _contextFactory();
+                var model = context.Find<DocumentTypeReadModel>(domainEvent.AggregateIdentity);
+                if (model == null) return;
+                var oldSearchViewModels = (
+                    from dt in context.Set<DocumentTypeReadModel>()
+                    from dv in dt.DocumentViews.OfType<GridViewReadModel>()
+                    where dt.Id == domainEvent.AggregateIdentity
+                    select dv
+                );
+                foreach (var documentView in oldSearchViewModels)
+                {
+                    model.DocumentViews.Remove(documentView);
+                }
+
+                context.SaveChanges();
+                if (domainEvent.AggregateEvent.GridView == null)
+                {
+                    unitOfWork.Complete();
+                    return;
+                }
+
+                var newDocumentView = DocumentViewReadModel.FromDomainModel(domainEvent.AggregateEvent.GridView);
+                newDocumentView.DocumentTypeId = model.Id;
+                model.DocumentViews.Add(newDocumentView);
+                model.ModificationTime = domainEvent.Timestamp;
+                model.Version += 1;
+                context.SaveChanges();
+                unitOfWork.Complete();
             }
 
             public static object GetConsistentHash(object o) => o switch

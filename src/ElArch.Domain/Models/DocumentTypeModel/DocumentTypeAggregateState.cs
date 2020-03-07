@@ -10,13 +10,15 @@ namespace ElArch.Domain.Models.DocumentTypeModel
     public sealed class DocumentTypeAggregateState : AggregateState<DocumentTypeAggregate, DocumentTypeId>,
         IEmit<DocumentTypeCreated>, IEmit<DocumentTypeNameChanged>,
         IEmit<DocumentTypeFieldAdded>, IEmit<DocumentTypeFieldRemoved>,
-        IEmit<SearchViewChanged>
+        IEmit<SearchViewChanged>, IEmit<GridViewChanged>
     {
         public DocumentTypeName? DocumentTypeName { get; private set; }
 
         public ImmutableDictionary<FieldId, IField> Fields { get; private set; } = ImmutableDictionary<FieldId, IField>.Empty;
 
-        public SearchView? SearchView { get; set; }
+        public SearchView? SearchView { get; private set; }
+
+        public GridView? GridView { get; private set; }
 
         public void Apply(DocumentTypeCreated aggregateEvent)
         {
@@ -41,6 +43,11 @@ namespace ElArch.Domain.Models.DocumentTypeModel
         public void Apply(SearchViewChanged aggregateEvent)
         {
             SearchView = aggregateEvent.SearchView;
+        }
+
+        public void Apply(GridViewChanged aggregateEvent)
+        {
+            GridView = aggregateEvent.GridView;
         }
     }
 }

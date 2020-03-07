@@ -13,6 +13,8 @@ namespace ElArch.Domain.Models.DocumentTypeModel
             Command<ChangeDocumentTypeName, ChangeDocumentTypeNameHandler>();
             Command<AddDocumentTypeField, AddDocumentTypeFieldHandler>();
             Command<RemoveDocumentTypeField, RemoveDocumentTypeFieldHandler>();
+            Command<SetSearchView, SetSearchViewHandler>();
+            Command<SetGridView, SetGridViewHandler>();
         }
     }
 }

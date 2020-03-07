@@ -15,8 +15,4 @@
     <PackageReference Include="OneOf" Version="2.1.151" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\DocumentTypeModel\Entities" />
-  </ItemGroup>
-
 </Project>

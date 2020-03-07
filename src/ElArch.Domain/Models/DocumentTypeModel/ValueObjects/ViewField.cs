@@ -1,9 +1,12 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Akkatecture.ValueObjects;
 using JetBrains.Annotations;
 
 namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
 {
-    public abstract class ViewField
+    public abstract class ViewField : ValueObject
     {
         public ViewField([NotNull] FieldId fieldId, [NotNull] ViewOrder viewOrder, [NotNull] ViewFieldTitle fieldTitle)
         {
@@ -19,6 +22,14 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
         public FieldId FieldId { get; }
         public ViewOrder ViewOrder { get; }
         public ViewFieldTitle FieldTitle { get; }
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return GetType();
+            yield return FieldId;
+            yield return ViewOrder;
+            yield return FieldTitle;
+        }
     }
 
     public sealed class SearchViewField : ViewField
@@ -65,5 +76,10 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
         }
 
         public bool IsReadOnly { get; set; }
+
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            return base.GetEqualityComponents().Concat(new object[] {IsReadOnly});
+        }
     }
 }

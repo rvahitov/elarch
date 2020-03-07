@@ -17,6 +17,8 @@ namespace ElArch.Storage
             modelBuilder.ApplyConfiguration(new IntegerFieldReadModelConfiguration());
             modelBuilder.ApplyConfiguration(new DecimalFieldReadModelConfiguration());
             modelBuilder.ApplyConfiguration(new DateTimeFieldReadModelConfiguration());
+            modelBuilder.ApplyConfiguration(new DocumentViewReadModelConfiguration());
+            modelBuilder.ApplyConfiguration(new ViewFieldReadModelConfiguration());
         }
     }
 }

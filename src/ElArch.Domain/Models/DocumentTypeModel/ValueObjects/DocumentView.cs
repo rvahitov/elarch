@@ -11,7 +11,7 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
         IEnumerable<ViewField> ViewFields { get; }
     }
 
-    public abstract class DocumentView<TDocumentView, TViewField> : IDocumentView
+    public abstract class DocumentView<TDocumentView, TViewField> : IDocumentView, IEquatable<DocumentView<TDocumentView, TViewField>>
         where TDocumentView : DocumentView<TDocumentView, TViewField>
         where TViewField : ViewField
     {
@@ -23,6 +23,14 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
         public ImmutableList<TViewField> ViewFields { get; }
 
         IEnumerable<ViewField> IDocumentView.ViewFields => ViewFields;
+
+        public bool Equals(DocumentView<TDocumentView, TViewField>? other)
+        {
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+            if (ViewFields.Count != other.ViewFields.Count) return false;
+            return ViewFields.OrderBy(f => f.FieldId).Zip(other.ViewFields.OrderBy(f => f.FieldId), (f1, f2) => f1.Equals(f2)).All(b => b);
+        }
 
         [NotNull]
         public TDocumentView AddViewField([NotNull] TViewField viewField)
@@ -41,6 +49,21 @@ namespace ElArch.Domain.Models.DocumentTypeModel.ValueObjects
             if (ViewFields.Count(f => f.FieldId == viewField.FieldId) == 0) return (TDocumentView) this;
             var viewFields = ViewFields.RemoveAll(f => f.FieldId == viewField.FieldId);
             return (TDocumentView) Activator.CreateInstance(typeof(TDocumentView), viewFields);
+        }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is null) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((DocumentView<TDocumentView, TViewField>) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            var hasCode = new HashCode();
+            foreach (var f in ViewFields.OrderBy(f => f.FieldId)) hasCode.Add(f);
+
+            return hasCode.ToHashCode();
         }
     }
 
